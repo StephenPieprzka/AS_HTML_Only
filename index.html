@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<link rel="stylesheet" href="site.min.css" />
+<title>AS-Todoliste</title>
+<script>
+	var list = [];
+	function addEntry() {
+		var aufgabentext = document.getElementById("aufgabetext").value;
+		var faelligkeit = document.getElementById("faelligkeit").value;
+		var kategorieAuswahl = document.getElementById("kategorieAuswahl").value;
+		var aufgabenstatus = "ToDo";
+		if (!aufgabentext)
+		{
+			document.getElementById("aufgabentext_label").style.color = "#ff0000";
+			console.log("Aufgabentext ist leer!")
+		}else
+		{
+		document.getElementById("aufgabentext_label").style.color = "#000000";
+		}
+		if (!kategorieAuswahl) {
+		document.getElementById("aufgabenkategorie_label").style.color = "#ff0000";
+			console.log("Kategorieauswahl ist leer!")
+		}else
+		{
+			document.getElementById("aufgabenkategorie_label").style.color = "#000000";
+		}
+		if (aufgabentext && kategorieAuswahl)
+		{
+			console.log(aufgabenstatus);
+			list.push([aufgabentext, faelligkeit, kategorieAuswahl, aufgabenstatus]);
+		}
+		updateList();
+	}
+	</script>
+	<script>
+	function updateList() {
+		var table = document.getElementById("aufgabenListe");
+		var tableBody = document.getElementById("tablebody");
+		tableBody.innerHTML = '';
+		for (i = 0; i < list.length; i++) {
+			var tr = document.createElement('TR');
+			for (j = 0; j < list[i].length; j++) {
+				var td = document.createElement('TD')
+				td.appendChild(document.createTextNode(list[i][j]));
+				tr.appendChild(td)
+			}
+			var buttontd = document.createElement('TD')
+			var buttons = document.createElement('DIV');
+			buttons.setAttribute('class', 'nobreak');
+			if (list[i][3] == "ToDo")
+			{
+				buttons.innerHTML = "<div class='menubutton btn btn-success' onclick='solveElement(" + i + ")'><font size='3'>✅</font></div><div class='menubutton btn btn-danger' onclick='deleteElement(" + i + ")'><font size='3'>🗑️</font></div>";
+			}
+			else
+			{
+				buttons.innerHTML = "<div class='menubutton btn btn-danger' onclick='deleteElement(" + i + ")'><font size='3'>🗑️</font></div>";
+			}
+			
+			buttontd.appendChild(buttons)
+			tr.appendChild(buttontd)
+			tableBody.appendChild(tr);
+		}
+	}
+	</script>
+	<script>
+	function solveElement(i)
+	{
+		list[i][3] = "Erledigt";
+		updateList();
+	}
+	</script>
+	<script>
+	function deleteElement(i)
+	{
+		list.splice(i, 1);
+		updateList();
+	}
+</script>
+</head>
+<body style="background-color:#a2a2a2">
+<form method="post">
+    <div class="row">
+		<div class="col-md-10 col-md-offset-1 card bg-light mb-5" style="background-color:#f2f2f2; border-radius:12px">
+			<div class="card-title">
+			<h3>ToDo-Liste AS Projekt
+			</h3>
+			</div>
+		</div>
+		<div class="col-md-10 col-md-offset-1 card bg-light" style="background-color:#f2f2f2; border-radius:12px">
+			<div class="row">
+				<div class="col-lg-4" style="border-color:#a2a2a2;border-width:1px">
+					<div class="row mb-5">
+						<h4>ToDo erstellen</h4>
+					</div><input type="hidden" id="aufgabenId" />
+					<input type="hidden" id="aufgabenStatus" />
+					<div class="row mb-3">
+						<div class="col-md-3">
+							<label id="aufgabentext_label">Aufgabe*</label>
+						</div>
+						<input required class="col-md-9 form-control" id="aufgabetext" placeholder="Kurzer Aufgabentext" />
+					</div>
+					<div class="row mb-3">
+						<div class="col-md-3">
+							<label>F&#228;lligkeit</label>
+						</div>
+						<!-- datetime-local ist unter den html5 input types auf https://www.w3schools.com/html/html_form_input_types.asp geführt. 
+							 Unter Internet Explorer nicht lauffähig. Google Chrome stellt es korrekt dar.-->
+						<input class="col-md-9 form-control" type="date" id="faelligkeit" />
+					</div>
+					<div class="row mb-3">
+						<div class="col-md-3">
+							<label id="aufgabenkategorie_label">Kategorie*</label>
+						</div>
+						<select required id="kategorieAuswahl" class="col-md-9 form-control">
+							<option disabled selected value="">Bitte ausw&#228;hlen</option>
+							<option value="Aufgabe">Aufgabe</option>
+							<option value="Wichtige Aufgabe">Wichtige Aufgabe</option>
+							<option value="Kritische Aufgabe">Kritische Aufgabe</option>
+						</select>
+					</div>
+					<div class="row mb-3">
+
+						<div class="col-md-6 col-md-offset-6 btn btn-primary" onclick="addEntry();">Speichern</div>
+					</div>
+				</div>
+				<div class="col-lg-8">
+					<h4 class="mb-5">ToDo-Liste</h4>
+					<table class="mb-5" id="aufgabenListe" style="width:100%">
+						<thead>
+							<tr>
+								<th style="min-width:40%">WAS</th>
+								<th style="min-width:10%">F&#228;llig</th>
+								<th style="min-width:12%">Kategorie</th>
+								<th style="min-width:10%">Status</th>
+								<th style="width:84px"></th>
+							</tr>
+						</thead>
+						<tbody id="tablebody">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+</body>
+</html>
+
